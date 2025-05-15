@@ -7,6 +7,41 @@
 
 В ВКонтакте бот отвечает только если знает ответ - если не знает, он молчит (чтобы не мешать операторам).
 
+## Подготовка Google Cloud и Dialogflow
+1. Зарегистрируйтесь в Google Cloud
+    - Создайте учётную запись на платформе Google Cloud, если у вас её ещё нет.
+
+2. Создайте новый проект
+    - В консоли [Google Cloud](https://console.cloud.google.com/projectcreate?previousPage=%2Fwelcome%3Fproject%3Dregal-fortress-361907&organizationId=0) создайте новый проект.
+    - Сохраните его идентификатор (Project ID) - он понадобится для интеграции с Dialogflow.
+
+3. Создайте агента в Dialogflow
+    - Перейдите в сервис [Dialogflow](https://dialogflow.cloud.google.com/#/newAgent). В левом верхнем углу выберите регион размещения агента - выбирайте только Global.
+    - Затем нажмите кнопку для создания нового агента.
+
+4. Привяжите проект Google Cloud к агенту Dialogflow
+    - Введите название для вашего агента.
+    - После этого нажмите на кнопку выбора проекта Google и укажите тот Project ID, который вы создали ранее.
+    - Завершите создание агента.
+
+5. Создайте сервисный аккаунт и получите ключ
+    - Откройте раздел [Service accounts](https://console.cloud.google.com/iam-admin/serviceaccounts?project=regal-fortress-361907&inv=1&invt=AbxfhA) в Google Cloud.
+    - Нажмите Create service account, задайте имя и продолжайте.
+    - На этапе выбора роли выберите Owner в разделе Currently used, затем завершите создание.
+
+6. Скачайте JSON-ключ
+    - После создания сервисного аккаунта выберите его, кликните по трём точкам справа и выберите Manage Keys.
+    - Далее нажмите Add Keys → Create new key, выберите формат JSON и скачайте файл.
+    - Сохраните этот файл в папку вашего проекта.
+
+7. Настройте переменные окружения
+  - Откройте файл .env в корне вашего проекта.
+  - В строке GOOGLE_APPLICATION_CREDENTIALS укажите имя скачанного JSON-файла, например:
+
+    ```text
+    GOOGLE_APPLICATION_CREDENTIALS=firm-champion-459914-h1-f4f4ac94d573.json
+    ```
+
 ## Структура файлов
 
 - text_questions.json - база вопросов и ответов для обучения Dialogflow.
