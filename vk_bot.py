@@ -27,9 +27,9 @@ def main():
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW:
             if event.to_me:
-                result = detect_intent_texts(project_id, event.user_id, [event.text], "ru-RU")
-                if result:
-                    send_vk(vk_method_api, result, event.user_id)
+                response_text = detect_intent_texts(project_id, event.user_id, [event.text], "ru-RU")
+                if response_text:
+                    send_vk(vk_method_api, response_text, event.user_id)
 
 
 if __name__ == '__main__':
