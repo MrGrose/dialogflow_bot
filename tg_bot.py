@@ -13,7 +13,6 @@ logger = logging.getLogger('Logger')
 
 
 def start_tg_message(update: Update, context: CallbackContext) -> None:
-    print(update.message)
     user = update.effective_user
     update.message.reply_text(f"Hi {user.first_name}!")
 
