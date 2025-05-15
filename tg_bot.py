@@ -2,39 +2,34 @@ import json
 import logging
 
 from environs import Env
-from telegram import Bot, Update
+from telegram import Update
 from telegram.ext import (CallbackContext, CommandHandler, Filters,
                           MessageHandler, Updater)
 
-from dialogflow_bot import detect_intent_texts
+from dialog_flow_bot import detect_intent_texts
+from telegramlogshandlers import TelegramLogsHandler
+
+logger = logging.getLogger('Logger')
 
 
-class TelegramLogsHandler(logging.Handler):
-
-    def __init__(self, bot: Bot, chat_id: int) -> None:
-        super().__init__()
-        self.chat_id = chat_id
-        self.bot = bot
-
-    def emit(self, record: logging.LogRecord) -> None:
-        log_entry = self.format(record)
-        self.bot.send_message(chat_id=self.chat_id, text=log_entry)
-
-
-def start_tg_message(update: Update, context: CallbackContext) -> None:
+def start(update: Update, context: CallbackContext) -> None:
     user = update.effective_user
     update.message.reply_text(f"Hi {user.first_name}!")
 
 
-def send_tg_message(update: Update, context: CallbackContext) -> None:
+def echo(update: Update, context: CallbackContext) -> None:
     if update.message.text:
         user_message = update.message.text
         user_chat_id = update.message.chat_id
         project_id = context.bot_data.get("project_id")
-
-        response_text = detect_intent_texts(project_id, user_chat_id, [user_message], "ru-RU")
-        if response_text:
-            update.message.reply_text(response_text)
+        try:
+            response_text = detect_intent_texts(project_id, user_chat_id, [user_message], "ru-RU")
+            if response_text:
+                update.message.reply_text(response_text)
+            else:
+                update.message.reply_text("Я не понимаю, о чём речь.")
+        except Exception as error:
+            logger.exception(f"TG бот упал с ошибкой:{error}")
 
 
 def main() -> None:
@@ -52,17 +47,15 @@ def main() -> None:
     dispatcher = updater.dispatcher
     dispatcher.bot_data["project_id"] = project_id
 
-    dispatcher.add_handler(CommandHandler("start", start_tg_message))
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, send_tg_message))
+    dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
 
     logging.basicConfig(
         format="[%(asctime)s] - %(levelname)s - %(funcName)s - %(message)s",
         level=logging.INFO
     )
 
-    logger = logging.getLogger('Logger')
     logger.setLevel(logging.INFO)
-
     logger.addHandler(TelegramLogsHandler(updater.bot, tg_chat_id))
 
     updater.start_polling()
