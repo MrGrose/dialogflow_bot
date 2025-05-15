@@ -12,12 +12,13 @@ from telegramlogshandlers import TelegramLogsHandler
 logger = logging.getLogger('Logger')
 
 
-def start(update: Update, context: CallbackContext) -> None:
+def start_tg_message(update: Update, context: CallbackContext) -> None:
+    print(update.message)
     user = update.effective_user
     update.message.reply_text(f"Hi {user.first_name}!")
 
 
-def echo(update: Update, context: CallbackContext) -> None:
+def send_tg_message(update: Update, context: CallbackContext) -> None:
     if update.message.text:
         user_message = update.message.text
         user_chat_id = update.message.chat_id
@@ -47,8 +48,8 @@ def main() -> None:
     dispatcher = updater.dispatcher
     dispatcher.bot_data["project_id"] = project_id
 
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+    dispatcher.add_handler(CommandHandler("start", start_tg_message))
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, send_tg_message))
 
     logging.basicConfig(
         format="[%(asctime)s] - %(levelname)s - %(funcName)s - %(message)s",
