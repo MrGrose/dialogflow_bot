@@ -4,10 +4,10 @@ import vk_api
 from environs import Env
 from vk_api.longpoll import VkEventType, VkLongPoll
 
-from dialog_flow_bot import detect_intent_texts
+from dialogflow_bot import detect_intent_texts
 
 
-def send_vk(vk_bot, text, user_id):
+def send_vk_message(vk_bot, text, user_id):
     vk_bot.messages.send(
         user_id=user_id,
         message=text,

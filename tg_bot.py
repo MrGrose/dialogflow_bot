@@ -6,7 +6,7 @@ from telegram import Bot, Update
 from telegram.ext import (CallbackContext, CommandHandler, Filters,
                           MessageHandler, Updater)
 
-from dialog_flow_bot import detect_intent_texts
+from dialogflow_bot import detect_intent_texts
 
 
 class TelegramLogsHandler(logging.Handler):
@@ -21,12 +21,12 @@ class TelegramLogsHandler(logging.Handler):
         self.bot.send_message(chat_id=self.chat_id, text=log_entry)
 
 
-def start(update: Update, context: CallbackContext) -> None:
+def start_tg_message(update: Update, context: CallbackContext) -> None:
     user = update.effective_user
     update.message.reply_text(f"Hi {user.first_name}!")
 
 
-def echo(update: Update, context: CallbackContext) -> None:
+def send_tg_message(update: Update, context: CallbackContext) -> None:
     if update.message.text:
         user_message = update.message.text
         user_chat_id = update.message.chat_id
@@ -52,8 +52,8 @@ def main() -> None:
     dispatcher = updater.dispatcher
     dispatcher.bot_data["project_id"] = project_id
 
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+    dispatcher.add_handler(CommandHandler("start", start_tg_message))
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, send_tg_message))
 
     logging.basicConfig(
         format="[%(asctime)s] - %(levelname)s - %(funcName)s - %(message)s",
