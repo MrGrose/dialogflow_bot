@@ -6,7 +6,7 @@ from telegram import Update
 from telegram.ext import (CallbackContext, CommandHandler, Filters,
                           MessageHandler, Updater)
 
-from dialog_flow_bot import detect_intent_texts
+from dialogflow_bot import detect_intent_texts
 from telegramlogshandlers import TelegramLogsHandler
 
 logger = logging.getLogger('Logger')
