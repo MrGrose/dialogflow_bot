@@ -1,6 +1,6 @@
 import json
+import argparse
 
-from environs import Env
 from google.cloud import dialogflow
 
 
@@ -27,20 +27,24 @@ def create_intent(project_id, display_name, training_phrases_parts, message_text
     )
 
 
+def load_json_file(filepath):
+    with open(filepath, "r", encoding="UTF-8") as file:
+        return json.load(file)
+
+
 def main() -> None:
-    env = Env()
-    env.read_env()
-    application_credentials = env.str("GOOGLE_APPLICATION_CREDENTIALS")
+    parser = argparse.ArgumentParser(description="Создание намерений потока диалога")
+    parser.add_argument("-c", "--credentials", required=True, help="Путь к вашим данным google.json")
+    parser.add_argument("-q", "--questions", default="text_questions.json", help="Путь к вопросам в формате json")
+    parsed_args = parser.parse_args()
 
-    with open(application_credentials, "r", encoding="UTF-8") as file:
-        data = json.loads(file.read())
-    project_id = data.get("project_id")
+    row_data = load_json_file(parsed_args.credentials)
+    project_id = row_data.get("project_id")
 
-    with open("text_questions.json", "r", encoding="UTF-8") as file:
-        questions = json.loads(file.read())
-        for title, contents in questions.items():
-            create_intent(project_id, title, contents["questions"], [contents["answer"]])
-        print("Intent created!")
+    questions = load_json_file(parsed_args.questions)
+    for title, contents in questions.items():
+        response = create_intent(project_id, title, contents["questions"], [contents["answer"]])
+        print(f"Намерения созданы: {response.name}")
 
 
 if __name__ == "__main__":
