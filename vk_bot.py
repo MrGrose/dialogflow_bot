@@ -7,7 +7,7 @@ from telegram.ext import Updater
 from vk_api.longpoll import VkEventType, VkLongPoll
 
 from dialogflow_bot import detect_intent_texts
-from telegramlogshandlers import TelegramLogsHandler
+from telegram_logger import TelegramLogsHandler
 
 logger = logging.getLogger('Logger')
 
@@ -40,7 +40,8 @@ def main():
     try:
         for event in longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW and event.to_me:
-                response_text = detect_intent_texts(project_id, event.user_id, [event.text], "ru-RU")
+                session_id = f"vk-{event.user_id}"
+                response_text = detect_intent_texts(project_id, session_id, [event.text], "ru-RU")
                 if response_text:
                     send_vk_message(vk_method_api, response_text, event.user_id)
     except Exception as error:

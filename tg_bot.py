@@ -7,7 +7,7 @@ from telegram.ext import (CallbackContext, CommandHandler, Filters,
                           MessageHandler, Updater)
 
 from dialogflow_bot import detect_intent_texts
-from telegramlogshandlers import TelegramLogsHandler
+from telegram_logger import TelegramLogsHandler
 
 logger = logging.getLogger('Logger')
 
@@ -20,10 +20,10 @@ def start_tg_message(update: Update, context: CallbackContext) -> None:
 def send_tg_message(update: Update, context: CallbackContext) -> None:
     if update.message.text:
         user_message = update.message.text
-        user_chat_id = update.message.chat_id
+        session_id = f"tg-{update.message.chat_id}"
         project_id = context.bot_data.get("project_id")
         try:
-            response_text = detect_intent_texts(project_id, user_chat_id, [user_message], "ru-RU")
+            response_text = detect_intent_texts(project_id, session_id, [user_message], "ru-RU")
             if response_text:
                 update.message.reply_text(response_text)
             else:
