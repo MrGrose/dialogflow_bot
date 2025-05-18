@@ -125,11 +125,25 @@ TG_CHAT_ID=<ваш Telegram chat id для логов>
 VK_GROUP_TOKEN=<токен группы VK>
 GOOGLE_APPLICATION_CREDENTIALS=<путь до JSON-файла сервисного аккаунта Dialogflow>
 ```
-3. Запустите скрипт create_intent.py он создаст новый Intents в DialogFlow с вопросами на ответы из списка text_questions.json
+3. Запуск скрипта create_intent.py для создания Intents в DialogFlow. Данный скрипт автоматически создаёт новый Intent в DialogFlow, используя вопросы из файла text_questions.json (или другого файла с вопросами, если указать свой).
 
-```python
-python create_intent.py
+Как использовать
+```bash
+python create_intent.py -c путь/к/вашему/google.json
 ```
+ - `-c или --credentials` - обязательный параметр, указывающий путь к вашему файлу с учетными данными Google (например, google.json).
+
+Если вы хотите использовать другой файл с вопросами, укажите его через параметр -q:
+
+```bash
+python create_intent.py -c путь/к/вашему/google.json -q путь/к/вашим_вопросам.json
+```
+- `-q или --questions`- необязательный параметр, по умолчанию используется text_questions.json. Здесь указывается путь к JSON-файлу с вопросами.
+
+Аргументы командной строки
+- `-c, --credentials` - путь к JSON-файлу с учетными данными Google (обязательно).
+
+- `-q, --questions` - путь к JSON-файлу с вопросами (по умолчанию text_questions.json).
 
 4. Запуск Телеграмм и Вконтакте ботов.
 ```python
